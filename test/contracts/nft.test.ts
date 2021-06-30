@@ -13,8 +13,8 @@ contract("NFT", function(accounts) {
   let CURRENT_PRICE = 0;
   let currentDeck: BN;
   const deckMapPrice: { [key: number]: number } = {
-    1: 200000000,
-    2: 400000000,
+    1: 200000000000000000,
+    2: 400000000000000000,
     3: 400000000,
   };
 
@@ -41,7 +41,7 @@ contract("NFT", function(accounts) {
       new Date().getTime(),
       {
         from: currentAddresss,
-        value: web3.utils.toBN(200000000),
+        value: web3.utils.toBN(200000000000000000),
       }
     );
     const ownedCardsLengthAfter = await contractInstance.getOwnedCardsLength(

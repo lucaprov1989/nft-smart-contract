@@ -248,15 +248,15 @@ contract NFT is ERC721, Ownable {
   function getCurrentPrice(uint256 deck) public pure returns (uint256) {
     uint256 price;
     if (deck == 1) {
-      price = 200000000;
+      price = 0.2 ether;
     } else if (deck == 2 || deck == 3) {
-      price = 400000000;
+       price = 0.4 ether;
     } else if (deck == 4 || deck == 5) {
-      price = 600000000;
+      price = 0.6 ether;
     } else if (deck == 6 || deck == 7) {
-      price = 800000000;
+      price = 0.8 ether;
     } else {
-      price = 1500000000;
+     price = 1.5 ether;
     }
     return price;
   }
