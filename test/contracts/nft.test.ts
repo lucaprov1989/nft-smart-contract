@@ -8,7 +8,7 @@ contract("NFT", function(accounts) {
   console.log("lets go!");
   let contractInstance: NFTInstance;
   let libInstance: NFTLibInstance;
-  const CurrentAddress = accounts[0];
+  const currentAddresss = accounts[0];
   let web3Ins = new web3("ws://localhost:8545");
   let CURRENT_PRICE = 0;
   let currentDeck: BN;
@@ -21,7 +21,7 @@ contract("NFT", function(accounts) {
   before(async () => {
     contractInstance = await NFT.deployed();
     libInstance = await NFTLib.deployed();
-    console.log("lets go!")
+    console.log("lets go!");
   });
 
   beforeEach(async () => {
@@ -34,18 +34,18 @@ contract("NFT", function(accounts) {
   });
   it("PickCard should increment the cards owner length", async () => {
     const ownedCardsLengthBefore = await contractInstance.getOwnedCardsLength(
-      CurrentAddress
+      currentAddresss
     );
     await contractInstance.pickCard.sendTransaction(
-      CurrentAddress,
+      currentAddresss,
       new Date().getTime(),
       {
-        from: CurrentAddress,
+        from: currentAddresss,
         value: web3.utils.toBN(200000000),
       }
     );
     const ownedCardsLengthAfter = await contractInstance.getOwnedCardsLength(
-      CurrentAddress
+      currentAddresss
     );
     assert.equal(
       Number(ownedCardsLengthBefore) < Number(ownedCardsLengthAfter),
@@ -54,12 +54,12 @@ contract("NFT", function(accounts) {
   });
   it("Pick card should throw error if same seed is used twice", async () => {
     try {
-      await contractInstance.pickCard.call(CurrentAddress, 1234567, {
-        from: CurrentAddress,
+      await contractInstance.pickCard.call(currentAddresss, 1234567, {
+        from: currentAddresss,
         value: web3.utils.toBN(CURRENT_PRICE),
       });
-      await contractInstance.pickCard.call(CurrentAddress, 1234567, {
-        from: CurrentAddress,
+      await contractInstance.pickCard.call(currentAddresss, 1234567, {
+        from: currentAddresss,
         value: web3.utils.toBN(CURRENT_PRICE),
       });
     } catch (err) {
@@ -71,14 +71,15 @@ contract("NFT", function(accounts) {
   });
   it("PickCard cannot pick more than 52 cards", async () => {
     let error;
+
     try {
       for (let i = 0; i < 55; i++) {
         const price = await contractInstance.getCurrentPrice(currentDeck);
         await contractInstance.pickCard.sendTransaction(
-          CurrentAddress,
+          currentAddresss,
           new Date().getTime(),
           {
-            from: CurrentAddress,
+            from: currentAddresss,
             value: price,
           }
         );
@@ -86,7 +87,30 @@ contract("NFT", function(accounts) {
     } catch (err) {
       error = err;
     }
+
     assert.equal(error.reason, "ERC721: No cards available, reset deck.");
+  });
+  it("Cards should be unique", async () => {
+    const uniqueCards = [];
+    const ownedCardsLength = Number(
+      await contractInstance.getOwnedCardsLength(currentAddresss)
+    );
+    for (let i = 0; i <= ownedCardsLength - 1; i++) {
+      const tokenCard = await contractInstance.getOwnedCardAtIndex(
+        currentAddresss,
+        i
+      );
+      const card = await contractInstance.hashDeck(Number(tokenCard));
+      const number = Number(card[0]);
+      const suit = Number(card[1]);
+      uniqueCards.push({
+        number,
+        suit,
+      });
+    }
+
+    const uniqueElementsLength = _.uniqWith(uniqueCards, _.isEqual).length;
+    assert.equal(52, uniqueElementsLength);
   });
   it("Should throw ERC721: Max cards not reached.", async () => {
     let error;
@@ -103,10 +127,10 @@ contract("NFT", function(accounts) {
     let error;
     try {
       await contractInstance.pickCard.sendTransaction(
-        CurrentAddress,
+        currentAddresss,
         new Date().getTime(),
         {
-          from: CurrentAddress,
+          from: currentAddresss,
           value: web3.utils.toBN(1122),
         }
       );
@@ -116,7 +140,7 @@ contract("NFT", function(accounts) {
     assert.equal(error.reason, "ERC721: insufficent BNB.");
   });
   it("Withdraw should fill the balance in the landing contract", async () => {
-    web3Ins.eth.defaultAccount = CurrentAddress;
+    web3Ins.eth.defaultAccount = currentAddresss;
     const account = web3Ins.eth.defaultAccount as string;
     const balanceBefore = await web3Ins.eth.getBalance(account);
     await contractInstance.withdraw(account);
@@ -126,18 +150,18 @@ contract("NFT", function(accounts) {
   it("Token uri should return the token uri with default base uri set", async () => {
     const price = await contractInstance.getCurrentPrice(currentDeck);
     await contractInstance.pickCard.sendTransaction(
-      CurrentAddress,
+      currentAddresss,
       new Date().getTime(),
       {
-        from: CurrentAddress,
+        from: currentAddresss,
         value: price,
       }
     );
     const ownedCardsLength = await contractInstance.getOwnedCardsLength(
-      CurrentAddress
+      currentAddresss
     );
     const tokenCard = await contractInstance.getOwnedCardAtIndex(
-      CurrentAddress,
+      currentAddresss,
       Number(ownedCardsLength) - 1
     );
     const card = await contractInstance.hashDeck(Number(tokenCard));
@@ -151,10 +175,10 @@ contract("NFT", function(accounts) {
     const price = await contractInstance.getCurrentPrice(currentDeck);
     currentDeck = await contractInstance.getCurrentDeck();
     await contractInstance.pickCard.sendTransaction(
-      CurrentAddress,
+      currentAddresss,
       new Date().getTime(),
       {
-        from: CurrentAddress,
+        from: currentAddresss,
         value: price,
       }
     );

@@ -14,7 +14,7 @@ module.exports = (artifacts: Truffle.Artifacts, web3: Web3) => {
 
     const hashGames = await contract.deployed();
     console.log(
-      `HashGames deployed at ${hashGames.address} in network: ${network}.`
+      `Deployed at ${hashGames.address} in network: ${network}.`
     );
   };
 };
