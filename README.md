@@ -1,16 +1,7 @@
-# HashGames Truffle Box
+# NFT Example
 
-<br/>
-<p align="center">
-<a href="" target="_blank">
-<img src="" width="225" alt="HashGames logo">
-</a>
-</p>
-<br/>
-
-## Requirements
-
--
+## Description
+Just an example of an NFT contract implementing openzeppelin interfaces. Fully functional and tested.
 
 ## Installation
 
@@ -20,13 +11,7 @@
 npm install truffle -g
 ```
 
-2. Setup repo
-
-```bash
-
-```
-
-3. Install dependencies by running:
+2. Install dependencies by running:
 
 ```bash
 npm install
