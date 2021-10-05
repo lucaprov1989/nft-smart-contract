@@ -1,20 +1,16 @@
 type Network = "development" | "rinkeby" | "mainnet";
 
 module.exports = (artifacts: Truffle.Artifacts, web3: Web3) => {
-  return async (
-    deployer: Truffle.Deployer,
-    network: Network,
-    accounts: string[]
-  ) => {
+  return async (deployer: Truffle.Deployer, network: Network) => {
     const contract = artifacts.require("NFT");
     const contractLib = artifacts.require("NFTLib");
     await deployer.deploy(contractLib);
     await deployer.link(contractLib, contract);
-    await deployer.deploy(contract, "deck");
+    await deployer.deploy(contract, "deckName");
 
-    const hashGames = await contract.deployed();
+    const contractDeployed = await contract.deployed();
     console.log(
-      `Deployed at ${hashGames.address} in network: ${network}.`
+      `Deployed at ${contractDeployed.address} in network: ${network}.`
     );
   };
 };

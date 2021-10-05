@@ -10,11 +10,11 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
  * @dev Store & retrieve value in a variable
  */
 contract NFT is ERC721, Ownable {
-  // Deck 1 => card 1 => HashCard(suit,number)
+  // Deck 1 => card 1 => Card(suit,number)
   mapping(uint256 => mapping(uint256 => NFTLib.Card))
-    public hashDeckHistory;
+    public deckHistory;
   // token => card
-  mapping(uint256 => NFTLib.Card) public hashDeck;
+  mapping(uint256 => NFTLib.Card) public deck;
   string private cardIdentifier;
 
   // Owned or not per deck 1 => "0-0" => true
@@ -112,7 +112,7 @@ contract NFT is ERC721, Ownable {
   /**
    * @dev When there are no more cards to mint, process next deck.
    */
-  function nextHashDeck() external onlyOwner() {
+  function nextDeck() external onlyOwner() {
     require(currentCard == MAX_DECK_CARDS, "ERC721: Max cards not reached");
     currentCard = 0;
     currentDeck++;
@@ -126,7 +126,7 @@ contract NFT is ERC721, Ownable {
   modifier validatePrice() {
     require(
       msg.value >= getCurrentPrice(currentDeck),
-      "ERC721: insufficent BNB."
+      "ERC721: insufficent funds sent."
     );
     _;
   }
@@ -170,7 +170,7 @@ contract NFT is ERC721, Ownable {
   }
 
   /**
-   * @dev Picks a random card, set it as owned and adds it to the HashDeck
+   * @dev Picks a random card, set it as owned and adds it to the deck
    */
   function pickCard(address to, uint256 seed)
     external
@@ -226,7 +226,7 @@ contract NFT is ERC721, Ownable {
     view
     returns (NFTLib.Card memory)
   {
-    return hashDeckHistory[deckNumber][cardNumber];
+    return deckHistory[deckNumber][cardNumber];
   }
 
   function _markCardAsTaken(NFTLib.Card memory card, uint256 seed)
@@ -237,9 +237,9 @@ contract NFT is ERC721, Ownable {
     // 2. Set seed used to true
     isSeedUsed[seed] = true;
     // Deck 1 => Card 1 => Card Details
-    hashDeckHistory[currentDeck][currentCard] = card;
+    deckHistory[currentDeck][currentCard] = card;
     // tokenId => card
-    hashDeck[tokenId] = card;
+    deck[tokenId] = card;
   }
 
   /**
