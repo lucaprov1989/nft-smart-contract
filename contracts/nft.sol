@@ -6,33 +6,40 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract NFT is ERC721, Ownable {
+  using Strings for uint256;
+  // ----- Deck mappings
   // Deck 1 => card 1 => Card(suit,number)
   mapping(uint256 => mapping(uint256 => NFTLib.Card))
     public deckHistory;
   // token => card
   mapping(uint256 => NFTLib.Card) public deck;
-  string private cardIdentifier;
+  // Current deck number being processed
+  uint256 public currentDeck = 1;
+  // Id => Deck Description
+  mapping(uint256 => string) public deckDescription;
 
+  // ----- Cards mappings
+  string private cardIdentifier;
   // Owned or not per deck 1 => "0-0" => true
   mapping(uint256 => mapping(string => bool)) private ownedCards;
   // Is seed already used (seed => true / false)
   mapping(uint256 => bool) internal isSeedUsed;
   // Current card number being processed
   uint256 public currentCard = 0;
-
-  // Current deck number being processed
-  uint256 public currentDeck = 1;
   // Max possible cards for deck
   uint256 private constant MAX_DECK_CARDS = 52;
+
+  // ----- Owners
   // ownerAddress => array of tokendIds
   mapping(address => uint256[]) internal ownerToIds;
   // tokenId => address
   mapping(uint256 => address) internal idToOwner;
   // the token id representing the card
   uint256 public tokenId = 0;
-  // Id => Deck Description
-  mapping(uint256 => string) public deckDescription;
-  bytes4 private constant _INTERFACE_ID_ERC721 = 0x80ac58cd; //defualt interface that identifes this contract as ERC721
+
+  bytes4 private constant _INTERFACE_ID_ERC721 = 0x80ac58cd; //default interface that identifes this contract as ERC721
+
+  // ----- Uris
   // Optional mapping for token URIs
   mapping(uint256 => string) public _tokenURIs;
   string private _baseURIextended;
@@ -56,8 +63,6 @@ contract NFT is ERC721, Ownable {
     require(_exists(tId), "ERC721Metadata: URI set of nonexistent token");
     _tokenURIs[tokenId] = _tUri;
   }
-
-  using Strings for uint256;
 
   function tokenURI(uint256 tId)
     public
