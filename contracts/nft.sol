@@ -5,10 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-/**
- * @title Storage
- * @dev Store & retrieve value in a variable
- */
 contract NFT is ERC721, Ownable {
   // Deck 1 => card 1 => Card(suit,number)
   mapping(uint256 => mapping(uint256 => NFTLib.Card))
